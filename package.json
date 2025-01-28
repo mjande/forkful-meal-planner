@@ -17,6 +17,7 @@
     "@mantine/form": "^7.16.2",
     "@mantine/hooks": "^7.16.2",
     "@mantine/modals": "^7.16.2",
+    "@tabler/icons-react": "^3.29.0",
     "@tanstack/react-router": "^1.97.21",
     "dayjs": "^1.11.13",
     "react": "^18.3.1",
