@@ -7,7 +7,6 @@ import {
   IconSalt,
 } from '@tabler/icons-react';
 import { Link } from '@tanstack/react-router';
-import { useState } from 'react';
 
 const links = [
   { link: '', label: 'Home', path: '/', icon: IconHome },
@@ -18,18 +17,12 @@ const links = [
 ];
 
 export function Navbar() {
-  const [active, setActive] = useState('Home');
-
   const linkElements = links.map((link) => (
     <Link
       to={link.path}
       className={classes.link}
-      data-active={link.label === active || undefined}
       href={link.link}
       key={link.label}
-      onClick={() => {
-        setActive(link.label);
-      }}
     >
       <link.icon className={classes.linkIcon} stroke={1.5} />
       <span>{link.label}</span>

@@ -15,11 +15,11 @@
   font-size: var(--mantine-font-size-sm);
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-sm);
   font-weight: 500;
-  color: var(--mantine-color-gray-7);
+  color: var(--mantine-color-black);
 }
 
 .link:hover {
-  background-color: var(--mantine-color-gray-0);
+  background-color: var(--mantine-color-brand-light-6);
   color: var(--mantine-color-black);
 
   .linkIcon {
@@ -40,7 +40,7 @@
 }
 
 .linkIcon {
-  color: var(--mantine-color-gray-6);
+  color: var(--mantine-color-black);
   margin-right: var(--mantine-spacing-sm);
   width: 25px;
   height: 25px;
