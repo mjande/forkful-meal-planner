@@ -11,13 +11,20 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as MainImport } from './routes/main'
+import { Route as HelpImport } from './routes/help'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const MainRoute = MainImport.update({
-  id: '/main',
-  path: '/main',
+const HelpRoute = HelpImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const IndexRoute = IndexImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -25,11 +32,18 @@ const MainRoute = MainImport.update({
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/main': {
-      id: '/main'
-      path: '/main'
-      fullPath: '/main'
-      preLoaderRoute: typeof MainImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/help': {
+      id: '/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof HelpImport
       parentRoute: typeof rootRoute
     }
   }
@@ -38,33 +52,38 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/main': typeof MainRoute
+  '/': typeof IndexRoute
+  '/help': typeof HelpRoute
 }
 
 export interface FileRoutesByTo {
-  '/main': typeof MainRoute
+  '/': typeof IndexRoute
+  '/help': typeof HelpRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/main': typeof MainRoute
+  '/': typeof IndexRoute
+  '/help': typeof HelpRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/main'
+  fullPaths: '/' | '/help'
   fileRoutesByTo: FileRoutesByTo
-  to: '/main'
-  id: '__root__' | '/main'
+  to: '/' | '/help'
+  id: '__root__' | '/' | '/help'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  MainRoute: typeof MainRoute
+  IndexRoute: typeof IndexRoute
+  HelpRoute: typeof HelpRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  MainRoute: MainRoute,
+  IndexRoute: IndexRoute,
+  HelpRoute: HelpRoute,
 }
 
 export const routeTree = rootRoute
@@ -77,11 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/main"
+        "/",
+        "/help"
       ]
     },
-    "/main": {
-      "filePath": "main.tsx"
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/help": {
+      "filePath": "help.tsx"
     }
   }
 }
