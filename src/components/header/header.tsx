@@ -1,13 +1,14 @@
-import { Button, Container } from '@mantine/core';
-import classes from './header.module.css';
+import { Group, Title } from '@mantine/core';
+import { IconHelp } from '@tabler/icons-react';
+import { Link } from '@tanstack/react-router';
 
-export function Header() {
+export function Header({ title }: { title: string }) {
   return (
-    <header className={classes.header}>
-      <Container fluid className={classes.container} h={75}>
-        <h1 className={classes.headerTitle}>Forkful Meal Planner</h1>
-        <Button color="brand-accent">Log Out</Button>
-      </Container>
-    </header>
+    <Group justify="space-between" m="md">
+      <Title order={1}>{title}</Title>
+      <Link to="/help">
+        <IconHelp />
+      </Link>
+    </Group>
   );
 }
