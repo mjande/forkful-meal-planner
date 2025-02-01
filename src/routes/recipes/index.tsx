@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Header } from '../components/shared/header/header';
+import { Header } from '../../components/shared/header/header';
 import {
   Autocomplete,
   Button,
@@ -10,11 +10,11 @@ import {
   Text,
   Chip,
 } from '@mantine/core';
-import { Recipe } from '../models/recipe';
-import { IngredientAmount } from '../models/ingredient';
+import { Recipe } from '../../models/recipe';
+import { IngredientAmount } from '../../models/ingredient';
 import { useState } from 'react';
 
-export const Route = createFileRoute('/recipes')({
+export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
 });
 
