@@ -5,6 +5,7 @@ import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
 import { createTheme, MantineProvider } from '@mantine/core';
 import '@mantine/core/styles.css';
+import { ModalsProvider } from '@mantine/modals';
 
 const router = createRouter({
   routeTree,
@@ -66,7 +67,9 @@ const theme = createTheme({
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <RouterProvider router={router} />
+      <ModalsProvider>
+        <RouterProvider router={router} />
+      </ModalsProvider>
     </MantineProvider>
   </StrictMode>,
 );

@@ -1,8 +1,8 @@
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { Banner } from '../components/banner/banner';
-import { Navbar } from '../components/navbar/navbar';
-import { AppShell } from '@mantine/core';
+import { Banner } from '../components/shared/banner/banner';
+import { Navbar } from '../components/shared/navbar/navbar';
+import { AppShell, Container } from '@mantine/core';
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -28,7 +28,9 @@ function RootComponent() {
 
       <AppShell.Main>
         <main>
-          <Outlet />
+          <Container size="lg">
+            <Outlet />
+          </Container>
         </main>
         <TanStackRouterDevtools position="bottom-right" />
       </AppShell.Main>

@@ -11,10 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as IngredientsImport } from './routes/ingredients'
 import { Route as HelpImport } from './routes/help'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
+
+const IngredientsRoute = IngredientsImport.update({
+  id: '/ingredients',
+  path: '/ingredients',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const HelpRoute = HelpImport.update({
   id: '/help',
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpImport
       parentRoute: typeof rootRoute
     }
+    '/ingredients': {
+      id: '/ingredients'
+      path: '/ingredients'
+      fullPath: '/ingredients'
+      preLoaderRoute: typeof IngredientsImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -54,36 +68,41 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
+  '/ingredients': typeof IngredientsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
+  '/ingredients': typeof IngredientsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
+  '/ingredients': typeof IngredientsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/help'
+  fullPaths: '/' | '/help' | '/ingredients'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/help'
-  id: '__root__' | '/' | '/help'
+  to: '/' | '/help' | '/ingredients'
+  id: '__root__' | '/' | '/help' | '/ingredients'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HelpRoute: typeof HelpRoute
+  IngredientsRoute: typeof IngredientsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HelpRoute: HelpRoute,
+  IngredientsRoute: IngredientsRoute,
 }
 
 export const routeTree = rootRoute
@@ -97,7 +116,8 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/help"
+        "/help",
+        "/ingredients"
       ]
     },
     "/": {
@@ -105,6 +125,9 @@ export const routeTree = rootRoute
     },
     "/help": {
       "filePath": "help.tsx"
+    },
+    "/ingredients": {
+      "filePath": "ingredients.tsx"
     }
   }
 }

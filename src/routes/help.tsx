@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Header } from '../components/header/header';
+import { Header } from '../components/shared/header/header';
 import { List, ListItem, Text } from '@mantine/core';
 
 export const Route = createFileRoute('/help')({
@@ -10,7 +10,7 @@ function RouteComponent() {
   return (
     <>
       <Header title="Help"></Header>
-      <Text m="md">
+      <Text my="md">
         New to Forkful Meal Planner? Follow these easy to steps to get started
         planning all your delicious meals.
       </Text>
@@ -44,7 +44,7 @@ function RouteComponent() {
           prepare within a certain date range.
         </ListItem>
       </List>
-      <Text m="md">We hope you enjoy using the Forkful Meal</Text>
+      <Text my="md">We hope you enjoy using the Forkful Meal</Text>
     </>
   );
 }

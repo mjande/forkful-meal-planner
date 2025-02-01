@@ -1,6 +1,6 @@
 import { Title, Text, Image, Group, Container, List } from '@mantine/core';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Header } from '../components/header/header';
+import { Header } from '../components/shared/header/header';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
@@ -10,14 +10,14 @@ function RouteComponent() {
   return (
     <>
       <Header title="Forkful Meal Planner"></Header>
-      <Text m="md">
+      <Text my="md">
         Stop procrastinating and start cooking with Forkful Meal Planner!
         Organize your kitchen like a pro by tracking ingredients, managing
         recipes, and planning meals for the entire week. Whether you&apos;re
         cooking for one or a family, Forkful makes it easy to stay on top of
         your meals, reduce food waste, and enjoy stress-free dining every day.
       </Text>
-      <Group m="md">
+      <Group my="md">
         <Image
           h={300}
           w="auto"
@@ -43,7 +43,7 @@ function RouteComponent() {
           </List>
         </Container>
       </Group>
-      <Text mx="md" my="lg">
+      <Text my="lg">
         First time here? Check out the <Link to="/help">Help</Link> page for
         information about how to get started.
       </Text>
