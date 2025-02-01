@@ -109,7 +109,7 @@ function RouteComponent() {
   return (
     <>
       <Header title="Ingredients"></Header>
-      <Button color="brand-dark.3" mb="md" onClick={openAddIngredientForm}>
+      <Button mb="md" onClick={openAddIngredientForm}>
         Add Ingredient
       </Button>
       <Paper shadow="xs" withBorder={true} style={{ width: 'min-content' }}>
