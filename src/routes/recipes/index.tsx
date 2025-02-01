@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { Header } from '../../components/shared/header/header';
 import {
   Autocomplete,
@@ -74,7 +74,15 @@ function RouteComponent() {
       </Text>
 
       <Group>
-        <Button>Show Details</Button>
+        <Button>
+          <Link
+            to="/recipes/$recipeId"
+            params={{ recipeId: recipe.name }}
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            Show Details
+          </Link>
+        </Button>
         <Button>Add to Plan</Button>
       </Group>
     </Card>

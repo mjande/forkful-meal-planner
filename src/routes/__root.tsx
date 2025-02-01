@@ -26,7 +26,7 @@ function RootComponent() {
         <Navbar />
       </AppShell.Navbar>
 
-      <AppShell.Main>
+      <AppShell.Main bg="brand-light.1">
         <main>
           <Container size="lg">
             <Outlet />
