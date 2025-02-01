@@ -12,6 +12,7 @@ import {
 } from '@mantine/core';
 import { Recipe } from '../models/recipe';
 import { IngredientAmount } from '../models/ingredient';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/recipes')({
   component: RouteComponent,
@@ -28,7 +29,7 @@ const ingredients: IngredientAmount[] = [
   },
 ];
 
-const recipes: Recipe[] = [
+const recipeData: Recipe[] = [
   {
     name: 'Spaghetti Carbonara',
     cookingTime: '35 minutes',
@@ -50,22 +51,35 @@ const recipes: Recipe[] = [
   },
 ];
 
-const recipeElements = recipes.map((recipe) => (
-  <Card key={recipe.name} shadow="sm" withBorder={true} w="300px">
-    <Title order={3}>{recipe.name}</Title>
-    <Text>{recipe.description}</Text>
-    <Text mt="auto" mb="sm">
-      {recipe.cookingTime}
-    </Text>
-
-    <Group>
-      <Button>Show Details</Button>
-      <Button>Add to Plan</Button>
-    </Group>
-  </Card>
-));
-
 function RouteComponent() {
+  const [query, setQuery] = useState<string>();
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipeData);
+
+  function search(query?: string) {
+    if (query) {
+      setFilteredRecipes(
+        recipeData.filter((recipe) => recipe.name.includes(query)),
+      );
+    } else {
+      setFilteredRecipes(recipeData);
+    }
+  }
+
+  const recipeElements = filteredRecipes.map((recipe) => (
+    <Card key={recipe.name} shadow="sm" withBorder={true} w="300px">
+      <Title order={3}>{recipe.name}</Title>
+      <Text>{recipe.description}</Text>
+      <Text mt="auto" mb="sm">
+        {recipe.cookingTime}
+      </Text>
+
+      <Group>
+        <Button>Show Details</Button>
+        <Button>Add to Plan</Button>
+      </Group>
+    </Card>
+  ));
+
   return (
     <>
       <Header title="Recipes"></Header>
@@ -73,9 +87,12 @@ function RouteComponent() {
       <Flex align="flex-end" gap="md" my="sm">
         <Autocomplete
           label="Search for a recipe"
-          data={recipes.map((recipe) => recipe.name)}
+          data={recipeData.map((recipe) => recipe.name)}
+          onChange={(value: string) => setQuery(value)}
         ></Autocomplete>
-        <Button style={{ marginRight: 'auto' }}>Search</Button>
+        <Button style={{ marginRight: 'auto' }} onClick={() => search(query)}>
+          Search
+        </Button>
         <Chip variant="light">Low-Carb</Chip>
         <Chip variant="light">Vegetarian</Chip>
       </Flex>
