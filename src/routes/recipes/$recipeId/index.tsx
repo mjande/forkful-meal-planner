@@ -4,6 +4,7 @@ import { Button, Group, Paper, Title, Text, Table, Flex } from '@mantine/core';
 import { Header } from '../../../components/shared/header/header';
 import { RecipeIngredient } from '../../../models/ingredient';
 import { modals } from '@mantine/modals';
+import { MealForm } from '../../../components/meals/meal-form';
 
 export const Route = createFileRoute('/recipes/$recipeId/')({
   component: RouteComponent,
@@ -29,6 +30,18 @@ const recipeData: Recipe = {
 };
 
 function RouteComponent() {
+  function openMealForm(recipe: string) {
+    modals.open({
+      title: `Add Recipe to Plan`,
+      children: (
+        <MealForm
+          recipe={recipe}
+          closeForm={() => modals.closeAll()}
+        ></MealForm>
+      ),
+    });
+  }
+
   function openDeleteConfirmation(recipe: Recipe) {
     modals.openConfirmModal({
       title: 'Delete Recipe',
@@ -66,7 +79,9 @@ function RouteComponent() {
     <>
       <Header title={recipeData.name}></Header>
       <Group>
-        <Button>Add to Plan</Button>
+        <Button onClick={() => openMealForm(recipeData.name)}>
+          Add to Plan
+        </Button>
         <Button component={Link} {...editLinkProps}>
           Edit Recipe
         </Button>

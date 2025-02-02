@@ -13,6 +13,8 @@ import {
 import { Recipe } from '../../models/recipe';
 import { RecipeIngredient } from '../../models/ingredient';
 import { useState } from 'react';
+import { modals } from '@mantine/modals';
+import { MealForm } from '../../components/meals/meal-form';
 
 export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
@@ -55,19 +57,31 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
     params: { recipeId: recipe.name },
   });
 
+  function openMealForm(recipe: string) {
+    modals.open({
+      title: `Add Recipe to Plan`,
+      children: (
+        <MealForm
+          recipe={recipe}
+          closeForm={() => modals.closeAll()}
+        ></MealForm>
+      ),
+    });
+  }
+
   return (
-    <Card shadow="sm" withBorder={true} w="300px">
+    <Card shadow="sm" withBorder w="300px">
       <Title order={3}>{recipe.name}</Title>
       <Text>{recipe.description}</Text>
       <Text mt="auto" mb="sm">
         {recipe.cookingTime}
       </Text>
 
-      <Group>
+      <Group justify="space-between">
         <Button component={Link} {...showDetailsLinkProps}>
           Show Details
         </Button>
-        <Button>Add to Plan</Button>
+        <Button onClick={() => openMealForm(recipe.name)}>Add to Plan</Button>
       </Group>
     </Card>
   );
