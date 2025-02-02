@@ -19,7 +19,15 @@ import { Link, useLinkProps } from '@tanstack/react-router';
 
 export function RecipeForm({ recipe }: { recipe?: Recipe }) {
   const form = useForm<Recipe>({
-    initialValues: recipe,
+    initialValues: {
+      name: recipe?.name || '',
+      cookingTime: recipe?.cookingTime || '',
+      description: recipe?.description || '',
+      instructions: recipe?.instructions || '',
+      ingredients: recipe?.ingredients || [
+        { ingredient: { name: '' }, unit: '', amount: 0 },
+      ],
+    },
   });
 
   function createRecipe(event: FormEvent) {

@@ -1,11 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { Recipe } from '../../models/recipe';
+import { createFileRoute, Link, useLinkProps } from '@tanstack/react-router';
+import { Recipe } from '../../../models/recipe';
 import { Button, Group, Paper, Title, Text, Table, Flex } from '@mantine/core';
-import { Header } from '../../components/shared/header/header';
-import { RecipeIngredient } from '../../models/ingredient';
+import { Header } from '../../../components/shared/header/header';
+import { RecipeIngredient } from '../../../models/ingredient';
 import { modals } from '@mantine/modals';
 
-export const Route = createFileRoute('/recipes/$recipeId')({
+export const Route = createFileRoute('/recipes/$recipeId/')({
   component: RouteComponent,
 });
 
@@ -57,12 +57,19 @@ function RouteComponent() {
     console.log(`Deleting ${recipeId}`);
   }
 
+  const editLinkProps = useLinkProps({
+    to: '/recipes/$recipeId/edit',
+    params: { recipeId: recipeData.name },
+  });
+
   return (
     <>
       <Header title={recipeData.name}></Header>
       <Group>
         <Button>Add to Plan</Button>
-        <Button>Edit Recipe</Button>
+        <Button component={Link} {...editLinkProps}>
+          Edit Recipe
+        </Button>
         <Button color="red" onClick={() => openDeleteConfirmation(recipeData)}>
           Delete Recipe
         </Button>
