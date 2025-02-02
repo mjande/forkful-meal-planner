@@ -3,7 +3,7 @@ import { useForm } from '@mantine/form';
 import { Ingredient } from '../../models/ingredient';
 import { FormEvent } from 'react';
 
-export function IngredientsForm(props: {
+export function IngredientForm(props: {
   ingredient?: Ingredient;
   closeForm: () => void;
 }) {
@@ -12,10 +12,7 @@ export function IngredientsForm(props: {
   const isNew = ingredient === undefined;
 
   const form = useForm({
-    initialValues: {
-      name: isNew ? '' : ingredient.name,
-      units: isNew ? '' : ingredient.units,
-    },
+    initialValues: ingredient,
   });
 
   function createIngredient() {

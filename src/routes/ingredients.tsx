@@ -4,7 +4,7 @@ import { ActionIcon, Button, Flex, Paper, Table, Text } from '@mantine/core';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
 import { Ingredient } from '../models/ingredient';
-import { IngredientsForm } from '../components/ingredients/ingredient-form';
+import { IngredientForm } from '../components/ingredients/ingredient-form';
 
 export const Route = createFileRoute('/ingredients')({
   component: RouteComponent,
@@ -46,7 +46,7 @@ function RouteComponent() {
     modals.open({
       title: 'Add Ingredient',
       children: (
-        <IngredientsForm closeForm={() => modals.closeAll()}></IngredientsForm>
+        <IngredientForm closeForm={() => modals.closeAll()}></IngredientForm>
       ),
     });
   }
@@ -55,10 +55,10 @@ function RouteComponent() {
     modals.open({
       title: `Edit Ingredient: ${ingredient.name}`,
       children: (
-        <IngredientsForm
+        <IngredientForm
           ingredient={ingredient}
           closeForm={() => modals.closeAll()}
-        ></IngredientsForm>
+        ></IngredientForm>
       ),
     });
   }

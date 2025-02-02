@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
+import { createFileRoute, Link, useLinkProps } from '@tanstack/react-router';
 import { Header } from '../../components/shared/header/header';
 import {
   Autocomplete,
@@ -11,20 +11,22 @@ import {
   Chip,
 } from '@mantine/core';
 import { Recipe } from '../../models/recipe';
-import { IngredientAmount } from '../../models/ingredient';
+import { RecipeIngredient } from '../../models/ingredient';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
 });
 
-const ingredients: IngredientAmount[] = [
+const ingredients: RecipeIngredient[] = [
   {
-    ingredient: { name: 'spaghetti', units: 'lbs' },
+    ingredient: { name: 'spaghetti' },
+    unit: 'lbs',
     amount: 1,
   },
   {
-    ingredient: { name: 'salt', units: 'oz' },
+    ingredient: { name: 'salt' },
+    unit: 'oz',
     amount: 3,
   },
 ];
@@ -35,21 +37,41 @@ const recipeData: Recipe[] = [
     cookingTime: '35 minutes',
     description:
       'A pasta dish made with eggs, cheese, bacon, and black pepper.',
-    instructions: [
-      'Cook the thing',
-      'Cook it more',
-      'Stir in other ingredients',
-    ],
+    instructions: 'Cook the thing. Cook it more. Stir in other ingredients',
     ingredients,
   },
   {
     name: 'Hot Dogs',
     cookingTime: '20 minutes',
     description: 'Obviously these are hot dogs',
-    instructions: ['Cook the hot dog', 'Eat the hot dog'],
+    instructions: 'Cook the hot dog. Eat the hot dog',
     ingredients,
   },
 ];
+
+function RecipeCard({ recipe }: { recipe: Recipe }) {
+  const showDetailsLinkProps = useLinkProps({
+    to: '/recipes/$recipeId',
+    params: { recipeId: recipe.name },
+  });
+
+  return (
+    <Card shadow="sm" withBorder={true} w="300px">
+      <Title order={3}>{recipe.name}</Title>
+      <Text>{recipe.description}</Text>
+      <Text mt="auto" mb="sm">
+        {recipe.cookingTime}
+      </Text>
+
+      <Group>
+        <Button component={Link} {...showDetailsLinkProps}>
+          Show Details
+        </Button>
+        <Button>Add to Plan</Button>
+      </Group>
+    </Card>
+  );
+}
 
 function RouteComponent() {
   const [query, setQuery] = useState<string>();
@@ -66,32 +88,15 @@ function RouteComponent() {
   }
 
   const recipeElements = filteredRecipes.map((recipe) => (
-    <Card key={recipe.name} shadow="sm" withBorder={true} w="300px">
-      <Title order={3}>{recipe.name}</Title>
-      <Text>{recipe.description}</Text>
-      <Text mt="auto" mb="sm">
-        {recipe.cookingTime}
-      </Text>
-
-      <Group>
-        <Button>
-          <Link
-            to="/recipes/$recipeId"
-            params={{ recipeId: recipe.name }}
-            style={{ textDecoration: 'none', color: 'inherit' }}
-          >
-            Show Details
-          </Link>
-        </Button>
-        <Button>Add to Plan</Button>
-      </Group>
-    </Card>
+    <RecipeCard key={recipe.name} recipe={recipe}></RecipeCard>
   ));
 
   return (
     <>
       <Header title="Recipes"></Header>
-      <Button>Add Recipe</Button>
+      <Button component={Link} to="/recipes/add">
+        Add Recipe
+      </Button>
       <Flex align="flex-end" gap="md" my="sm">
         <Autocomplete
           label="Search for a recipe"

@@ -1,9 +1,10 @@
 export interface Ingredient {
   name: string;
-  units: string;
+  units?: string;
 }
 
-export interface IngredientAmount {
+export interface RecipeIngredient {
   ingredient: Ingredient;
+  unit: string;
   amount: number;
 }
