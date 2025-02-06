@@ -4,7 +4,10 @@ import { Ingredient } from '../../models/ingredient';
 import { FormEvent } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { modals } from '@mantine/modals';
-import { createIngredient } from '../../services/ingredients-service';
+import {
+  createIngredient,
+  updateIngredient,
+} from '../../services/ingredients-service';
 
 export function IngredientForm({ ingredient }: { ingredient?: Ingredient }) {
   const isNew = ingredient === undefined;
@@ -13,7 +16,7 @@ export function IngredientForm({ ingredient }: { ingredient?: Ingredient }) {
     initialValues: ingredient,
   });
 
-  const createMutation = useMutation({
+  const create = useMutation({
     mutationFn: createIngredient,
     onSuccess: () => {
       modals.closeAll();
@@ -23,23 +26,23 @@ export function IngredientForm({ ingredient }: { ingredient?: Ingredient }) {
     },
   });
 
-  function updateIngredient() {
-    if (ingredient === undefined) {
-      return;
-    }
-
-    console.log(
-      `Updating ingredient ${ingredient.name} to ${form.values.name}`,
-    );
-  }
+  const update = useMutation({
+    mutationFn: updateIngredient,
+    onSuccess: () => {
+      modals.closeAll();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   function submit(event: FormEvent) {
     event.preventDefault();
 
     if (isNew) {
-      createMutation.mutate(form.values);
+      create.mutate(form.values);
     } else {
-      updateIngredient();
+      update.mutate({ id: ingredient.id, ingredient: form.values });
     }
   }
 

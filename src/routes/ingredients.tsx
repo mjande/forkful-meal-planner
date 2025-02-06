@@ -36,6 +36,9 @@ function RouteComponent() {
     modals.open({
       title: `Edit Ingredient: ${ingredient.name}`,
       children: <IngredientForm ingredient={ingredient}></IngredientForm>,
+      onClose: () => {
+        void refetch();
+      },
     });
   }
 
