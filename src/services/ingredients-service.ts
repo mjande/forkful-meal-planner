@@ -27,3 +27,9 @@ export async function updateIngredient({
     body: JSON.stringify(ingredient),
   });
 }
+
+export async function deleteIngredient(id: number) {
+  return fetch(`${url}/${id}`, {
+    method: 'DELETE',
+  });
+}

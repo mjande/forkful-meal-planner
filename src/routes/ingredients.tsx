@@ -5,8 +5,11 @@ import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
 import { Ingredient } from '../models/ingredient';
 import { IngredientForm } from '../components/ingredients/ingredient-form';
-import { useQuery } from '@tanstack/react-query';
-import { getIngredients } from '../services/ingredients-service';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  deleteIngredient,
+  getIngredients,
+} from '../services/ingredients-service';
 
 export const Route = createFileRoute('/ingredients')({
   component: RouteComponent,
@@ -17,10 +20,6 @@ function RouteComponent() {
     queryKey: ['ingredients'],
     queryFn: getIngredients,
   });
-
-  function deleteIngredient(ingredientId: string) {
-    console.log(`Deleting ${ingredientId}`);
-  }
 
   function openAddIngredientForm() {
     modals.open({
@@ -59,9 +58,21 @@ function RouteComponent() {
       ),
       labels: { confirm: 'Delete', cancel: 'Cancel' },
       confirmProps: { color: 'red' },
-      onConfirm: () => deleteIngredient(ingredient.name),
+      onConfirm: () => {
+        deleteMut.mutate(ingredient.id);
+      },
     });
   }
+
+  const deleteMut = useMutation({
+    mutationFn: deleteIngredient,
+    onSuccess: () => {
+      void refetch();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   const rows = data?.map((ingredient) => (
     <Table.Tr key={ingredient.id}>
