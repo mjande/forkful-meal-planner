@@ -5,39 +5,19 @@ import { IconEdit, IconTrash } from '@tabler/icons-react';
 import { modals } from '@mantine/modals';
 import { Ingredient } from '../models/ingredient';
 import { IngredientForm } from '../components/ingredients/ingredient-form';
+import { useQuery } from '@tanstack/react-query';
+import { getIngredients } from '../services/ingredients-service';
 
 export const Route = createFileRoute('/ingredients')({
   component: RouteComponent,
 });
 
-const ingredients: Ingredient[] = [
-  {
-    name: 'Chicken',
-    units: 'Lbs',
-  },
-  {
-    name: 'Olive Oil',
-    units: 'Tbsp',
-  },
-  {
-    name: 'Flour',
-    units: 'Tbsp',
-  },
-  {
-    name: 'Garlic',
-    units: 'Cloves',
-  },
-  {
-    name: 'Salt',
-    units: 'Tsp',
-  },
-  {
-    name: 'Butter High Fructose Corn Syrup Deluxe',
-    units: 'Oz',
-  },
-];
-
 function RouteComponent() {
+  const { data, refetch } = useQuery({
+    queryKey: ['ingredients'],
+    queryFn: getIngredients,
+  });
+
   function deleteIngredient(ingredientId: string) {
     console.log(`Deleting ${ingredientId}`);
   }
@@ -45,21 +25,17 @@ function RouteComponent() {
   function openAddIngredientForm() {
     modals.open({
       title: 'Add Ingredient',
-      children: (
-        <IngredientForm closeForm={() => modals.closeAll()}></IngredientForm>
-      ),
+      children: <IngredientForm></IngredientForm>,
+      onClose: () => {
+        void refetch();
+      },
     });
   }
 
   function openEditIngredientForm(ingredient: Ingredient) {
     modals.open({
       title: `Edit Ingredient: ${ingredient.name}`,
-      children: (
-        <IngredientForm
-          ingredient={ingredient}
-          closeForm={() => modals.closeAll()}
-        ></IngredientForm>
-      ),
+      children: <IngredientForm ingredient={ingredient}></IngredientForm>,
     });
   }
 
@@ -76,9 +52,6 @@ function RouteComponent() {
           <Text>
             <b>Name:</b> {ingredient.name}
           </Text>
-          <Text>
-            <b>Units:</b> {ingredient.units}
-          </Text>
         </>
       ),
       labels: { confirm: 'Delete', cancel: 'Cancel' },
@@ -87,12 +60,11 @@ function RouteComponent() {
     });
   }
 
-  const rows = ingredients.map((ingredient) => (
-    <Table.Tr key={ingredient.name}>
+  const rows = data?.map((ingredient) => (
+    <Table.Tr key={ingredient.id}>
       <Table.Td style={{ minWidth: '200px', width: 'auto' }}>
         {ingredient.name}
       </Table.Td>
-      <Table.Td style={{ minWidth: '75px' }}>{ingredient.units}</Table.Td>
       <Table.Td style={{ width: '100px' }}>
         <Flex gap="md">
           <ActionIcon variant="default">
@@ -117,7 +89,6 @@ function RouteComponent() {
           <Table.Thead>
             <Table.Tr>
               <Table.Th>Name</Table.Th>
-              <Table.Th>Units</Table.Th>
               <Table.Th style={{ textAlign: 'center' }}>Actions</Table.Th>
             </Table.Tr>
           </Table.Thead>
