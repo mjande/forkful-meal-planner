@@ -7,16 +7,16 @@ import { DatePickerInput } from '@mantine/dates';
 const recipeData = ['Spaghetti Carbonara', 'Hot Dogs', 'Stew'];
 
 interface formData {
-  recipe: string;
+  recipeId: number;
   date: Dayjs;
 }
 
-export function MealForm(props: { recipe?: string; closeForm: () => void }) {
-  const { recipe, closeForm } = props;
+export function MealForm(props: { recipeId?: number; closeForm: () => void }) {
+  const { recipeId, closeForm } = props;
 
   const form = useForm<formData>({
     initialValues: {
-      recipe: recipe || '',
+      recipeId: recipeId || 0,
       date: dayjs(),
     },
   });
@@ -25,7 +25,7 @@ export function MealForm(props: { recipe?: string; closeForm: () => void }) {
     event.preventDefault();
 
     console.log(
-      `Creating meal: ${form.values.recipe} on ${form.values.date.format('MM/DD/YYYY')}`,
+      `Creating meal: ${form.values.recipeId} on ${form.values.date.format('MM/DD/YYYY')}`,
     );
 
     closeForm();

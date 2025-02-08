@@ -4,7 +4,9 @@ export interface Ingredient {
 }
 
 export interface RecipeIngredient {
-  ingredient: Ingredient;
+  id: number;
+  ingredient_id: number;
+  name: string;
   unit: string;
-  amount: number;
+  quantity: number;
 }

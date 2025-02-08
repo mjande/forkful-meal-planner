@@ -11,14 +11,14 @@ import {
   Chip,
 } from '@mantine/core';
 import { Recipe } from '../../models/recipe';
-import { useEffect, useState } from 'react';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../../components/meals/meal-form';
-import { useQuery } from '@tanstack/react-query';
 import { getRecipes } from '../../services/recipes-service';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
+  loader: getRecipes,
 });
 
 function RecipeCard({ recipe }: { recipe: Recipe }) {
@@ -27,12 +27,12 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
     params: { recipeId: recipe.id.toString() },
   });
 
-  function openMealForm(recipe: string) {
+  function openMealForm(recipeId: number) {
     modals.open({
       title: `Add Recipe to Plan`,
       children: (
         <MealForm
-          recipe={recipe}
+          recipeId={recipeId}
           closeForm={() => modals.closeAll()}
         ></MealForm>
       ),
@@ -51,34 +51,27 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
         <Button component={Link} {...showDetailsLinkProps}>
           Show Details
         </Button>
-        <Button onClick={() => openMealForm(recipe.name)}>Add to Plan</Button>
+        <Button onClick={() => openMealForm(recipe.id)}>Add to Plan</Button>
       </Group>
     </Card>
   );
 }
 
 function RouteComponent() {
-  const { data, refetch } = useQuery({
-    queryKey: ['recipes'],
-    queryFn: getRecipes,
-  });
+  const recipes = Route.useLoaderData();
 
   const [query, setQuery] = useState<string>();
-  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(data || []);
-
-  useEffect(() => {
-    if (data) {
-      setFilteredRecipes(data);
-    }
-  }, [data]);
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes);
 
   function filter(query?: string) {
-    if (!data || data.length === 0) {
+    if (recipes.length === 0) {
       setFilteredRecipes([]);
     } else if (!query) {
-      setFilteredRecipes(data);
+      setFilteredRecipes(recipes);
     } else {
-      setFilteredRecipes(data.filter((recipe) => recipe.name.includes(query)));
+      setFilteredRecipes(
+        recipes.filter((recipe) => recipe.name.includes(query)),
+      );
     }
   }
 
@@ -95,7 +88,7 @@ function RouteComponent() {
       <Flex align="flex-end" gap="md" my="sm">
         <Autocomplete
           label="Search for a recipe"
-          data={data?.map((recipe) => recipe.name)}
+          data={recipes.map((recipe) => recipe.name)}
           onChange={(value: string) => setQuery(value)}
         ></Autocomplete>
         <Button style={{ marginRight: 'auto' }} onClick={() => filter(query)}>
