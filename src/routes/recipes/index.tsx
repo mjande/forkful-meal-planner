@@ -11,50 +11,20 @@ import {
   Chip,
 } from '@mantine/core';
 import { Recipe } from '../../models/recipe';
-import { RecipeIngredient } from '../../models/ingredient';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../../components/meals/meal-form';
+import { useQuery } from '@tanstack/react-query';
+import { getRecipes } from '../../services/recipes-service';
 
 export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
 });
 
-const ingredients: RecipeIngredient[] = [
-  {
-    ingredient: { name: 'spaghetti' },
-    unit: 'lbs',
-    amount: 1,
-  },
-  {
-    ingredient: { name: 'salt' },
-    unit: 'oz',
-    amount: 3,
-  },
-];
-
-const recipeData: Recipe[] = [
-  {
-    name: 'Spaghetti Carbonara',
-    cookingTime: '35 minutes',
-    description:
-      'A pasta dish made with eggs, cheese, bacon, and black pepper.',
-    instructions: 'Cook the thing. Cook it more. Stir in other ingredients',
-    ingredients,
-  },
-  {
-    name: 'Hot Dogs',
-    cookingTime: '20 minutes',
-    description: 'Obviously these are hot dogs',
-    instructions: 'Cook the hot dog. Eat the hot dog',
-    ingredients,
-  },
-];
-
 function RecipeCard({ recipe }: { recipe: Recipe }) {
   const showDetailsLinkProps = useLinkProps({
     to: '/recipes/$recipeId',
-    params: { recipeId: recipe.name },
+    params: { recipeId: recipe.id.toString() },
   });
 
   function openMealForm(recipe: string) {
@@ -88,21 +58,32 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
 }
 
 function RouteComponent() {
-  const [query, setQuery] = useState<string>();
-  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipeData);
+  const { data, refetch } = useQuery({
+    queryKey: ['recipes'],
+    queryFn: getRecipes,
+  });
 
-  function search(query?: string) {
-    if (query) {
-      setFilteredRecipes(
-        recipeData.filter((recipe) => recipe.name.includes(query)),
-      );
+  const [query, setQuery] = useState<string>();
+  const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(data || []);
+
+  useEffect(() => {
+    if (data) {
+      setFilteredRecipes(data);
+    }
+  }, [data]);
+
+  function filter(query?: string) {
+    if (!data || data.length === 0) {
+      setFilteredRecipes([]);
+    } else if (!query) {
+      setFilteredRecipes(data);
     } else {
-      setFilteredRecipes(recipeData);
+      setFilteredRecipes(data.filter((recipe) => recipe.name.includes(query)));
     }
   }
 
   const recipeElements = filteredRecipes.map((recipe) => (
-    <RecipeCard key={recipe.name} recipe={recipe}></RecipeCard>
+    <RecipeCard key={recipe.id} recipe={recipe}></RecipeCard>
   ));
 
   return (
@@ -114,10 +95,10 @@ function RouteComponent() {
       <Flex align="flex-end" gap="md" my="sm">
         <Autocomplete
           label="Search for a recipe"
-          data={recipeData.map((recipe) => recipe.name)}
+          data={data?.map((recipe) => recipe.name)}
           onChange={(value: string) => setQuery(value)}
         ></Autocomplete>
-        <Button style={{ marginRight: 'auto' }} onClick={() => search(query)}>
+        <Button style={{ marginRight: 'auto' }} onClick={() => filter(query)}>
           Search
         </Button>
         <Chip variant="light">Low-Carb</Chip>
