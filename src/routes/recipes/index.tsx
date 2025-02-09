@@ -22,6 +22,8 @@ export const Route = createFileRoute('/recipes/')({
 });
 
 function RecipeCard({ recipe }: { recipe: Recipe }) {
+  const recipes = Route.useLoaderData();
+
   const showDetailsLinkProps = useLinkProps({
     to: '/recipes/$recipeId',
     params: { recipeId: recipe.id.toString() },
@@ -30,12 +32,7 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
   function openMealForm(recipeId: number) {
     modals.open({
       title: `Add Recipe to Plan`,
-      children: (
-        <MealForm
-          recipeId={recipeId}
-          closeForm={() => modals.closeAll()}
-        ></MealForm>
-      ),
+      children: <MealForm recipeId={recipeId} recipes={recipes}></MealForm>,
     });
   }
 

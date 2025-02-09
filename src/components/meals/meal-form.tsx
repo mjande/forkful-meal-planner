@@ -3,36 +3,46 @@ import { FormEvent } from 'react';
 import { Button, Group, Select, Text } from '@mantine/core';
 import dayjs, { Dayjs } from 'dayjs';
 import { DatePickerInput } from '@mantine/dates';
-
-const recipeData = ['Spaghetti Carbonara', 'Hot Dogs', 'Stew'];
+import { useMutation } from '@tanstack/react-query';
+import { modals } from '@mantine/modals';
+import { createMeal } from '../../services/meals-service';
+import { Recipe } from '../../models/recipe';
 
 interface formData {
-  recipeId: number;
+  recipeId: string;
   date: Dayjs;
 }
 
-export function MealForm(props: { recipeId?: number; closeForm: () => void }) {
-  const { recipeId, closeForm } = props;
-
+export function MealForm({
+  recipeId,
+  recipes,
+}: {
+  recipeId?: number;
+  recipes: Recipe[];
+}) {
   const form = useForm<formData>({
     initialValues: {
-      recipeId: recipeId || 0,
+      recipeId: recipeId?.toString() || recipes[0].id.toString(),
       date: dayjs(),
     },
   });
 
-  function createMeal(event: FormEvent) {
+  const create = useMutation({
+    mutationFn: createMeal,
+    onSuccess: () => {
+      console.log('Meal created!');
+      modals.closeAll();
+    },
+    onError: (err) => console.log(err),
+  });
+
+  function submit(event: FormEvent) {
     event.preventDefault();
-
-    console.log(
-      `Creating meal: ${form.values.recipeId} on ${form.values.date.format('MM/DD/YYYY')}`,
-    );
-
-    closeForm();
+    create.mutate(form.values);
   }
 
   return (
-    <form onSubmit={createMeal}>
+    <form onSubmit={submit}>
       <Text>
         Pick a recipe and the day you&apos;d like to enjoy it.
         <br />
@@ -41,9 +51,12 @@ export function MealForm(props: { recipeId?: number; closeForm: () => void }) {
 
       <Select
         label="Recipe"
-        data={recipeData}
-        key={form.key('recipe')}
-        {...form.getInputProps('recipe')}
+        data={recipes.map((recipe) => ({
+          label: recipe.name,
+          value: recipe.id.toString(),
+        }))}
+        key={form.key('recipeId')}
+        {...form.getInputProps('recipeId')}
       ></Select>
 
       <DatePickerInput
@@ -53,7 +66,7 @@ export function MealForm(props: { recipeId?: number; closeForm: () => void }) {
       ></DatePickerInput>
 
       <Group justify="flex-end" mt="md">
-        <Button variant="default" onClick={closeForm}>
+        <Button variant="default" onClick={() => modals.closeAll()}>
           Cancel
         </Button>
         <Button type="submit">Submit</Button>
