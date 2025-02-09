@@ -88,7 +88,7 @@ function RouteComponent() {
       <Flex align="flex-end" gap="md" my="sm">
         <Autocomplete
           label="Search for a recipe"
-          data={recipes.map((recipe) => recipe.name)}
+          data={[...new Set(recipes.map((recipe) => recipe.name))]}
           onChange={(value: string) => setQuery(value)}
         ></Autocomplete>
         <Button style={{ marginRight: 'auto' }} onClick={() => filter(query)}>

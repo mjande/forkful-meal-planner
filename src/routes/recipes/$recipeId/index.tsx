@@ -12,10 +12,10 @@ import {
   List,
 } from '@mantine/core';
 import { Header } from '../../../components/shared/header/header';
-import { RecipeIngredient } from '../../../models/ingredient';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../../../components/meals/meal-form';
 import { getRecipe } from '../../../services/recipes-service';
+import { Ingredient } from '../../../models/ingredient';
 
 export const Route = createFileRoute('/recipes/$recipeId/')({
   component: RouteComponent,
@@ -100,7 +100,7 @@ function RouteComponent() {
           <Title order={2}>Ingredients</Title>
           <Table>
             <Table.Tbody>
-              {recipe.ingredients.map((ingredient: RecipeIngredient) => (
+              {recipe.ingredients.map((ingredient: Ingredient) => (
                 <Table.Tr key={ingredient.id}>
                   <Table.Td>{ingredient.quantity}</Table.Td>
                   <Table.Td>{ingredient.unit}</Table.Td>

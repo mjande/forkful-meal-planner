@@ -1,4 +1,4 @@
-import { RecipeIngredient } from './ingredient';
+import { Ingredient } from './ingredient';
 
 export interface Recipe {
   id: number;
@@ -6,5 +6,5 @@ export interface Recipe {
   cookingTime?: string;
   description?: string;
   instructions?: string;
-  ingredients: RecipeIngredient[];
+  ingredients: Ingredient[];
 }

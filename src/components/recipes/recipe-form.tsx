@@ -1,6 +1,5 @@
 import { useForm } from '@mantine/form';
 import { Recipe } from '../../models/recipe';
-import { FormEvent } from 'react';
 import {
   Button,
   Group,
@@ -13,39 +12,37 @@ import {
   Autocomplete,
   ActionIcon,
 } from '@mantine/core';
-import { RecipeIngredient } from '../../models/ingredient';
 import { IconTrash } from '@tabler/icons-react';
-import { Link, useLinkProps } from '@tanstack/react-router';
+import { Link, useLinkProps, useNavigate } from '@tanstack/react-router';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getIngredients } from '../../services/ingredients-service';
+import { createRecipe } from '../../services/recipes-service';
+import { FormEvent } from 'react';
 
 export function RecipeForm({ recipe }: { recipe?: Recipe }) {
-  const form = useForm<Recipe>({
+  const { data } = useQuery({
+    queryKey: ['ingredients'],
+    queryFn: getIngredients,
+    initialData: [],
+  });
+
+  const navigate = useNavigate({ from: '/recipes/add' });
+
+  const form = useForm<Partial<Recipe>>({
     initialValues: {
-      name: recipe?.name || '',
-      cookingTime: recipe?.cookingTime || '',
-      description: recipe?.description || '',
-      instructions: recipe?.instructions || '',
-      ingredients: recipe?.ingredients || [
-        { ingredient: { name: '' }, unit: '', amount: 0 },
-      ],
+      name: recipe?.name ?? '',
+      cookingTime: recipe?.cookingTime ?? '',
+      description: recipe?.description ?? '',
+      instructions: recipe?.instructions ?? '',
+      ingredients: recipe?.ingredients ?? [],
     },
   });
 
-  function createRecipe(event: FormEvent) {
-    event.preventDefault();
-    console.log(`Creating recipe ${form.values.name}`);
-  }
-
-  function updateRecipe(event: FormEvent) {
-    event.preventDefault();
-    console.log(`Updating recipe ${form.values.name}`);
-  }
-
   function addIngredient() {
-    console.log(form.values);
     form.insertListItem('ingredients', {
-      ingredient: { name: '' },
+      name: '',
       unit: '',
-      amount: 1,
+      quantity: 1,
     });
   }
 
@@ -58,10 +55,28 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
     params: recipe ? { recipeId: recipe.name } : {},
   });
 
+  const create = useMutation({
+    mutationFn: createRecipe,
+    onSuccess: (recipe) => {
+      void navigate({ to: `/recipes/${recipe.id}` });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  function submit(event: FormEvent) {
+    event.preventDefault();
+
+    if (true) {
+      create.mutate(form.values);
+    }
+  }
+
   return (
-    <form>
+    <form onSubmit={submit}>
       <Group mt="md">
-        <Button>Create Recipe</Button>
+        <Button type="submit">Create Recipe</Button>
         <Button variant="default" component={Link} {...cancelLinkProps}>
           Cancel
         </Button>
@@ -96,35 +111,31 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
         <Paper shadow="sm" p="md" style={{ flex: '1 1 0' }} withBorder>
           <Title order={2}>Ingredients</Title>
           {form.values.ingredients &&
-            form.values.ingredients.map(
-              (recipeIngredient: RecipeIngredient, index: number) => (
-                <Flex key={index} gap="md" align="flex-end">
-                  <NumberInput
-                    label="Amount"
-                    key={form.key(`ingredients.${index}.amount`)}
-                    {...form.getInputProps(`ingredients.${index}.amount`)}
-                    w="55px"
-                  />
-                  <TextInput
-                    label="Unit"
-                    key={form.key(`ingredients.${index}.unit`)}
-                    {...form.getInputProps(`ingredient.${index}.unit`)}
-                    w="55px"
-                  />
-                  <Autocomplete
-                    label="Ingredient Name"
-                    defaultValue={recipeIngredient.ingredient.name}
-                    key={form.key(`ingredients.${index}.ingredient.name`)}
-                    {...form.getInputProps(
-                      `ingredient.${index}.ingredient.name`,
-                    )}
-                  ></Autocomplete>
-                  <ActionIcon color="red" mb="4px">
-                    <IconTrash onClick={() => removeIngredient(index)} />
-                  </ActionIcon>
-                </Flex>
-              ),
-            )}
+            form.values.ingredients.map((_, index: number) => (
+              <Flex key={index} gap="md" align="flex-end">
+                <NumberInput
+                  label="Amount"
+                  key={form.key(`ingredients.${index}.quantity`)}
+                  {...form.getInputProps(`ingredients.${index}.quantity`)}
+                  w="55px"
+                />
+                <TextInput
+                  label="Unit"
+                  key={form.key(`ingredients.${index}.unit`)}
+                  {...form.getInputProps(`ingredients.${index}.unit`)}
+                  w="55px"
+                />
+                <Autocomplete
+                  label="Ingredient Name"
+                  key={form.key(`ingredients.${index}.ingredient`)}
+                  data={data}
+                  {...form.getInputProps(`ingredients.${index}.name`)}
+                ></Autocomplete>
+                <ActionIcon color="red" mb="4px">
+                  <IconTrash onClick={() => removeIngredient(index)} />
+                </ActionIcon>
+              </Flex>
+            ))}
           <Button mt="sm" onClick={addIngredient}>
             Add Ingredient
           </Button>

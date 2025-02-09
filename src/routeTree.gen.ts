@@ -12,7 +12,6 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as MealPlansImport } from './routes/meal-plans'
-import { Route as IngredientsImport } from './routes/ingredients'
 import { Route as HelpImport } from './routes/help'
 import { Route as IndexImport } from './routes/index'
 import { Route as RecipesIndexImport } from './routes/recipes/index'
@@ -25,12 +24,6 @@ import { Route as RecipesRecipeIdEditImport } from './routes/recipes/$recipeId/e
 const MealPlansRoute = MealPlansImport.update({
   id: '/meal-plans',
   path: '/meal-plans',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IngredientsRoute = IngredientsImport.update({
-  id: '/ingredients',
-  path: '/ingredients',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -88,13 +81,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpImport
       parentRoute: typeof rootRoute
     }
-    '/ingredients': {
-      id: '/ingredients'
-      path: '/ingredients'
-      fullPath: '/ingredients'
-      preLoaderRoute: typeof IngredientsImport
-      parentRoute: typeof rootRoute
-    }
     '/meal-plans': {
       id: '/meal-plans'
       path: '/meal-plans'
@@ -138,7 +124,6 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
-  '/ingredients': typeof IngredientsRoute
   '/meal-plans': typeof MealPlansRoute
   '/recipes/add': typeof RecipesAddRoute
   '/recipes': typeof RecipesIndexRoute
@@ -149,7 +134,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
-  '/ingredients': typeof IngredientsRoute
   '/meal-plans': typeof MealPlansRoute
   '/recipes/add': typeof RecipesAddRoute
   '/recipes': typeof RecipesIndexRoute
@@ -161,7 +145,6 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
-  '/ingredients': typeof IngredientsRoute
   '/meal-plans': typeof MealPlansRoute
   '/recipes/add': typeof RecipesAddRoute
   '/recipes/': typeof RecipesIndexRoute
@@ -174,7 +157,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/help'
-    | '/ingredients'
     | '/meal-plans'
     | '/recipes/add'
     | '/recipes'
@@ -184,7 +166,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/help'
-    | '/ingredients'
     | '/meal-plans'
     | '/recipes/add'
     | '/recipes'
@@ -194,7 +175,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/help'
-    | '/ingredients'
     | '/meal-plans'
     | '/recipes/add'
     | '/recipes/'
@@ -206,7 +186,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HelpRoute: typeof HelpRoute
-  IngredientsRoute: typeof IngredientsRoute
   MealPlansRoute: typeof MealPlansRoute
   RecipesAddRoute: typeof RecipesAddRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
@@ -217,7 +196,6 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HelpRoute: HelpRoute,
-  IngredientsRoute: IngredientsRoute,
   MealPlansRoute: MealPlansRoute,
   RecipesAddRoute: RecipesAddRoute,
   RecipesIndexRoute: RecipesIndexRoute,
@@ -237,7 +215,6 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/help",
-        "/ingredients",
         "/meal-plans",
         "/recipes/add",
         "/recipes/",
@@ -250,9 +227,6 @@ export const routeTree = rootRoute
     },
     "/help": {
       "filePath": "help.tsx"
-    },
-    "/ingredients": {
-      "filePath": "ingredients.tsx"
     },
     "/meal-plans": {
       "filePath": "meal-plans.tsx"

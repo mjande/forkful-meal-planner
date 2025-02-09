@@ -4,13 +4,11 @@ import {
   IconChefHat,
   IconHelp,
   IconHome,
-  IconSalt,
 } from '@tabler/icons-react';
 import { Link } from '@tanstack/react-router';
 
 const links = [
   { link: '', label: 'Home', path: '/', icon: IconHome },
-  { link: '', label: 'Ingredients', path: '/ingredients', icon: IconSalt },
   { link: '', label: 'Recipes', path: '/recipes', icon: IconChefHat },
   { link: '', label: 'Meal Plans', path: 'meal-plans', icon: IconCalendar },
   { link: '', label: 'Help', path: 'help', icon: IconHelp },
