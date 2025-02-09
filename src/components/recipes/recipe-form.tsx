@@ -16,7 +16,7 @@ import { IconTrash } from '@tabler/icons-react';
 import { Link, useLinkProps, useNavigate } from '@tanstack/react-router';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getIngredients } from '../../services/ingredients-service';
-import { createRecipe } from '../../services/recipes-service';
+import { createRecipe, updateRecipe } from '../../services/recipes-service';
 import { FormEvent } from 'react';
 
 export function RecipeForm({ recipe }: { recipe?: Recipe }) {
@@ -26,7 +26,9 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
     initialData: [],
   });
 
-  const navigate = useNavigate({ from: '/recipes/add' });
+  const navigate = useNavigate({
+    from: recipe ? '/recipes/$recipeId/edit' : '/recipes/add',
+  });
 
   const form = useForm<Partial<Recipe>>({
     initialValues: {
@@ -52,7 +54,7 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
 
   const cancelLinkProps = useLinkProps({
     to: recipe ? '/recipes/$recipeId' : '/recipes',
-    params: recipe ? { recipeId: recipe.name } : {},
+    params: recipe ? { recipeId: recipe.id } : {},
   });
 
   const create = useMutation({
@@ -65,18 +67,34 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
     },
   });
 
+  const update = useMutation({
+    mutationFn: updateRecipe,
+    onSuccess: (recipe) => {
+      void navigate({ to: `/recipes/${recipe.id}` });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
   function submit(event: FormEvent) {
     event.preventDefault();
 
-    if (true) {
+    if (!recipe) {
       create.mutate(form.values);
+    } else {
+      update.mutate({ id: recipe.id, recipe: form.values });
     }
   }
 
   return (
     <form onSubmit={submit}>
       <Group mt="md">
-        <Button type="submit">Create Recipe</Button>
+        {recipe ? (
+          <Button type="submit">Update Recipe</Button>
+        ) : (
+          <Button type="submit">Create Recipe</Button>
+        )}
         <Button variant="default" component={Link} {...cancelLinkProps}>
           Cancel
         </Button>

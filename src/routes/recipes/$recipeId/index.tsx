@@ -1,4 +1,9 @@
-import { createFileRoute, Link, useLinkProps } from '@tanstack/react-router';
+import {
+  createFileRoute,
+  Link,
+  useLinkProps,
+  useNavigate,
+} from '@tanstack/react-router';
 import { Recipe } from '../../../models/recipe';
 import {
   Button,
@@ -14,8 +19,9 @@ import {
 import { Header } from '../../../components/shared/header/header';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../../../components/meals/meal-form';
-import { getRecipe } from '../../../services/recipes-service';
+import { deleteRecipe, getRecipe } from '../../../services/recipes-service';
 import { Ingredient } from '../../../models/ingredient';
+import { useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/recipes/$recipeId/')({
   component: RouteComponent,
@@ -24,6 +30,7 @@ export const Route = createFileRoute('/recipes/$recipeId/')({
 
 function RouteComponent() {
   const recipe = Route.useLoaderData();
+  const navigate = useNavigate({ from: '/recipes/$recipeId' });
 
   function openMealForm(id: number) {
     modals.open({
@@ -54,12 +61,8 @@ function RouteComponent() {
       ),
       labels: { confirm: 'Delete', cancel: 'Cancel' },
       confirmProps: { color: 'red' },
-      onConfirm: () => deleteRecipe(recipe.id),
+      onConfirm: () => deleteMut.mutate(recipe.id),
     });
-  }
-
-  function deleteRecipe(recipeId: number) {
-    console.log(`Deleting ${recipeId}`);
   }
 
   const editLinkProps = useLinkProps({
@@ -70,6 +73,17 @@ function RouteComponent() {
   const instructionList = recipe.instructions
     ?.split('\\n')
     .map((step, index) => <ListItem key={index}>{step}</ListItem>);
+
+  const deleteMut = useMutation({
+    mutationFn: deleteRecipe,
+    onSuccess: () => {
+      console.log('Recipe deleted');
+      void navigate({ to: '/recipes' });
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   return (
     <>

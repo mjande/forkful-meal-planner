@@ -28,3 +28,24 @@ export async function createRecipe(recipe: Partial<Recipe>): Promise<Recipe> {
   const data = (await res.json()) as Recipe;
   return data;
 }
+
+export async function updateRecipe({
+  id,
+  recipe,
+}: {
+  id: number;
+  recipe: Partial<Recipe>;
+}): Promise<Recipe> {
+  const res = await fetch(`${url}/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(recipe),
+  });
+  const data = (await res.json()) as Recipe;
+  return data;
+}
+
+export async function deleteRecipe(id: number) {
+  return await fetch(`${url}/${id}`, {
+    method: 'DELETE',
+  });
+}
