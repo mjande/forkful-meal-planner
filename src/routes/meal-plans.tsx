@@ -5,8 +5,8 @@ import { Button, Card, Flex, Select, Title, Text, Group } from '@mantine/core';
 import { Meal } from '../models/meal';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../components/meals/meal-form';
-import { getMeals } from '../services/meals-service';
-import { useQuery } from '@tanstack/react-query';
+import { deleteMeal, getMeals } from '../services/meals-service';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getRecipes } from '../services/recipes-service';
 
@@ -37,7 +37,15 @@ function getDateRanges() {
   return ranges;
 }
 
-function MealCard({ meal }: { meal: Meal }) {
+function MealCard({ meal, refresh }: { meal: Meal; refresh: () => void }) {
+  const deleteMut = useMutation({
+    mutationFn: deleteMeal,
+    onSuccess: () => {
+      modals.closeAll();
+      refresh();
+    },
+  });
+
   function openDeleteConfirmation(meal: Meal) {
     modals.openConfirmModal({
       title: 'Remove Meal',
@@ -61,17 +69,13 @@ function MealCard({ meal }: { meal: Meal }) {
       ),
       labels: { confirm: 'Remove', cancel: 'Cancel' },
       confirmProps: { color: 'red' },
-      onConfirm: () => removeMeal(meal.recipe.name),
+      onConfirm: () => deleteMut.mutate(meal.id),
     });
-  }
-
-  function removeMeal(mealId: string) {
-    console.log(`Removing ${mealId} from plan`);
   }
 
   const showDetailsLinkProps = useLinkProps({
     to: '/recipes/$recipeId',
-    params: { recipeId: meal.recipe.name },
+    params: { recipeId: meal.recipe.id.toString() },
   });
 
   return (
@@ -122,8 +126,12 @@ function RouteComponent() {
     }
   }
 
+  function refresh() {
+    void refetch();
+  }
+
   const mealCards = data?.map((meal) => (
-    <MealCard key={meal.id} meal={meal}></MealCard>
+    <MealCard key={meal.id} meal={meal} refresh={refresh}></MealCard>
   ));
 
   return (

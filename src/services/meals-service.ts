@@ -50,3 +50,9 @@ export async function createMeal(body: { recipeId: string; date: Dayjs }) {
   const data = (await res.json()) as Meal;
   return data;
 }
+
+export async function deleteMeal(id: number) {
+  return await fetch(`${url}/${id}`, {
+    method: 'DELETE',
+  });
+}
