@@ -11,6 +11,8 @@ import {
   Flex,
   Autocomplete,
   ActionIcon,
+  Chip,
+  Text,
 } from '@mantine/core';
 import { IconTrash } from '@tabler/icons-react';
 import { Link, useLinkProps, useNavigate } from '@tanstack/react-router';
@@ -36,6 +38,7 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
       cookingTime: recipe?.cookingTime ?? '',
       description: recipe?.description ?? '',
       instructions: recipe?.instructions ?? '',
+      tags: recipe?.tags ?? [],
       ingredients: recipe?.ingredients ?? [],
     },
   });
@@ -50,6 +53,17 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
 
   function removeIngredient(index: number) {
     form.removeListItem('ingredients', index);
+  }
+
+  function toggleTag(tag: string, checked: boolean) {
+    const prevTags = form.values.tags;
+
+    if (checked && !prevTags?.includes(tag)) {
+      form.insertListItem('tags', tag);
+    } else if (!checked && prevTags?.includes(tag)) {
+      const index = prevTags.indexOf(tag);
+      form.removeListItem('tags', index);
+    }
   }
 
   const cancelLinkProps = useLinkProps({
@@ -106,6 +120,24 @@ export function RecipeForm({ recipe }: { recipe?: Recipe }) {
             key={form.key('name')}
             {...form.getInputProps('name')}
           />
+
+          <Group my="sm">
+            <Text>Tags:</Text>
+            <Chip
+              variant="light"
+              defaultChecked={recipe?.tags.includes('low-carb')}
+              onChange={(checked) => toggleTag('low-carb', checked)}
+            >
+              Low-Carb
+            </Chip>
+            <Chip
+              variant="light"
+              defaultChecked={recipe?.tags.includes('vegetarian')}
+              onChange={(checked) => toggleTag('vegetarian', checked)}
+            >
+              Vegetarian
+            </Chip>
+          </Group>
 
           <TextInput
             label="Cooking Time"

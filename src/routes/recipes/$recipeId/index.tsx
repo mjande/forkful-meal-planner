@@ -15,29 +15,37 @@ import {
   Flex,
   ListItem,
   List,
+  Chip,
 } from '@mantine/core';
 import { Header } from '../../../components/shared/header/header';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../../../components/meals/meal-form';
-import { deleteRecipe, getRecipe } from '../../../services/recipes-service';
+import {
+  deleteRecipe,
+  getRecipe,
+  getRecipes,
+} from '../../../services/recipes-service';
 import { Ingredient } from '../../../models/ingredient';
 import { useMutation } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/recipes/$recipeId/')({
   component: RouteComponent,
-  loader: ({ params }) => getRecipe(parseInt(params.recipeId)),
+  loader: async ({ params }) => {
+    const recipes = await getRecipes();
+    const recipe = await getRecipe(parseInt(params.recipeId));
+
+    return { recipe, recipes };
+  },
 });
 
 function RouteComponent() {
-  const recipe = Route.useLoaderData();
+  const { recipe, recipes } = Route.useLoaderData();
   const navigate = useNavigate({ from: '/recipes/$recipeId' });
 
   function openMealForm(id: number) {
     modals.open({
       title: `Add Recipe to Plan`,
-      children: (
-        <MealForm recipeId={id} closeForm={() => modals.closeAll()}></MealForm>
-      ),
+      children: <MealForm recipeId={id} recipes={recipes}></MealForm>,
     });
   }
 
@@ -100,6 +108,24 @@ function RouteComponent() {
 
       <Flex align="flex-start" gap="md" mt="md">
         <Paper shadow="sm" p="md" style={{ flex: '1 1 0' }} withBorder>
+          <Group my="sm">
+            <Text>Tags:</Text>
+            <Chip
+              variant="light"
+              checked={recipe.tags?.includes('low-carb')}
+              disabled
+            >
+              Low-Carb
+            </Chip>
+            <Chip
+              variant="light"
+              checked={recipe.tags?.includes('vegetarian')}
+              disabled
+            >
+              Vegetarian
+            </Chip>
+          </Group>
+
           <Title order={2}>Cooking Time</Title>
           <Text>{recipe.cookingTime}</Text>
 

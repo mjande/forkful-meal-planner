@@ -115,7 +115,7 @@ function RouteComponent() {
         </Chip>
         <Chip
           variant="light"
-          onChange={(checked) => toggleTag('vegatarian', checked)}
+          onChange={(checked) => toggleTag('vegetarian', checked)}
         >
           Vegetarian
         </Chip>

@@ -10,11 +10,12 @@ export const Route = createFileRoute('/recipes/$recipeId/edit')({
 
 function RouteComponent() {
   const recipe = Route.useLoaderData();
+  const key = JSON.stringify(recipe);
 
   return (
     <>
       <Header title="Edit Recipe"></Header>
-      <RecipeForm recipe={recipe}></RecipeForm>
+      <RecipeForm recipe={recipe} key={key}></RecipeForm>
     </>
   );
 }
