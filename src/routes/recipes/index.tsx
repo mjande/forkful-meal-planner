@@ -14,7 +14,7 @@ import { Recipe } from '../../models/recipe';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../../components/meals/meal-form';
 import { getRecipes } from '../../services/recipes-service';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
@@ -58,18 +58,36 @@ function RouteComponent() {
   const recipes = Route.useLoaderData();
 
   const [query, setQuery] = useState<string>();
+  const [tags, setTags] = useState<Set<string>>(new Set());
   const [filteredRecipes, setFilteredRecipes] = useState<Recipe[]>(recipes);
 
-  function filter(query?: string) {
-    if (recipes.length === 0) {
-      setFilteredRecipes([]);
-    } else if (!query) {
-      setFilteredRecipes(recipes);
-    } else {
-      setFilteredRecipes(
-        recipes.filter((recipe) => recipe.name.includes(query)),
+  useEffect(() => {
+    let recipeArray = recipes;
+    if (query) {
+      recipeArray = recipeArray.filter((recipe) =>
+        recipe?.name.includes(query),
       );
     }
+
+    for (const tag of tags) {
+      recipeArray = recipeArray.filter((recipe) => recipe?.tags?.includes(tag));
+    }
+
+    setFilteredRecipes(recipeArray);
+  }, [recipes, query, tags]);
+
+  function toggleTag(tag: string, checked: boolean) {
+    setTags((prev) => {
+      const newSet = new Set(prev);
+
+      if (checked) {
+        newSet.add(tag);
+      } else {
+        newSet.delete(tag);
+      }
+
+      return newSet;
+    });
   }
 
   const recipeElements = filteredRecipes.map((recipe) => (
@@ -87,12 +105,20 @@ function RouteComponent() {
           label="Search for a recipe"
           data={[...new Set(recipes.map((recipe) => recipe.name))]}
           onChange={(value: string) => setQuery(value)}
+          style={{ marginRight: 'auto' }}
         ></Autocomplete>
-        <Button style={{ marginRight: 'auto' }} onClick={() => filter(query)}>
-          Search
-        </Button>
-        <Chip variant="light">Low-Carb</Chip>
-        <Chip variant="light">Vegetarian</Chip>
+        <Chip
+          variant="light"
+          onChange={(checked) => toggleTag('low-carb', checked)}
+        >
+          Low-Carb
+        </Chip>
+        <Chip
+          variant="light"
+          onChange={(checked) => toggleTag('vegatarian', checked)}
+        >
+          Vegetarian
+        </Chip>
       </Flex>
       <Flex gap="sm">{recipeElements}</Flex>
     </>

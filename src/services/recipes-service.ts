@@ -17,6 +17,10 @@ export async function getRecipe(id: number): Promise<Recipe> {
     data.ingredients = [];
   }
 
+  if (data.tags === null) {
+    data.tags = [];
+  }
+
   return data;
 }
 
