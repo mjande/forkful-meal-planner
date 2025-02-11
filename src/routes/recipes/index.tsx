@@ -107,6 +107,7 @@ function RouteComponent() {
           onChange={(value: string) => setQuery(value)}
           style={{ marginRight: 'auto' }}
         ></Autocomplete>
+        <Text>Click to select tag(s)</Text>
         <Chip
           variant="light"
           onChange={(checked) => toggleTag('low-carb', checked)}
@@ -120,7 +121,9 @@ function RouteComponent() {
           Vegetarian
         </Chip>
       </Flex>
-      <Flex gap="sm">{recipeElements}</Flex>
+      <Flex gap="sm" wrap="wrap">
+        {recipeElements}
+      </Flex>
     </>
   );
 }

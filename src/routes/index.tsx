@@ -29,10 +29,12 @@ function RouteComponent() {
           <Title order={2}>Features</Title>
           <List>
             <List.Item>
-              Create individual ingredients to track amounts for each recipe
+              Create recipes to add to your weekly meal plans
             </List.Item>
             <List.Item>
-              Create recipes to add to your weekly meal plans
+              Itemize the ingredients (including quantity and units) in each
+              recipe <br />
+              for easy reference in later cooking.
             </List.Item>
             <List.Item>
               Find created recipes using the handy search bar or search filters

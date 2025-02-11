@@ -149,7 +149,7 @@ function RouteComponent() {
 
         <Button onClick={openMealForm}>Add Meal to Plan</Button>
       </Flex>
-      <Flex gap="sm" mt="sm">
+      <Flex gap="sm" mt="sm" wrap="wrap">
         {mealCards}
       </Flex>
     </>

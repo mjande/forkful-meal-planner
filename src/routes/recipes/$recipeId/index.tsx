@@ -13,8 +13,6 @@ import {
   Text,
   Table,
   Flex,
-  ListItem,
-  List,
   Chip,
 } from '@mantine/core';
 import { Header } from '../../../components/shared/header/header';
@@ -78,9 +76,11 @@ function RouteComponent() {
     params: { recipeId: recipe.id.toString() },
   });
 
+  /* 
   const instructionList = recipe.instructions
     ?.split('\\n')
     .map((step, index) => <ListItem key={index}>{step}</ListItem>);
+  */
 
   const deleteMut = useMutation({
     mutationFn: deleteRecipe,
@@ -126,14 +126,26 @@ function RouteComponent() {
             </Chip>
           </Group>
 
-          <Title order={2}>Cooking Time</Title>
-          <Text>{recipe.cookingTime}</Text>
+          {recipe.cookingTime && (
+            <>
+              <Title order={2}>Cooking Time</Title>
+              <Text>{recipe.cookingTime}</Text>
+            </>
+          )}
 
-          <Title order={2}>Description</Title>
-          <Text>{recipe.description}</Text>
+          {recipe.description && (
+            <>
+              <Title order={2}>Description</Title>
+              <Text>{recipe.description}</Text>
+            </>
+          )}
 
-          <Title order={2}>Instructions</Title>
-          <List type="ordered">{instructionList}</List>
+          {recipe.instructions && (
+            <>
+              <Title order={2}>Instructions</Title>
+              <Text>{recipe.instructions}</Text>
+            </>
+          )}
         </Paper>
 
         <Paper shadow="sm" p="md" h="100%" style={{ flex: '1 1 0' }} withBorder>

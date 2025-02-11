@@ -21,10 +21,9 @@ function RouteComponent() {
           cooking time, and instructions to your new recipe.
         </ListItem>
         <ListItem>
-          Use the Add Ingredient button to add any required ingredients to your
-          new recipe. These will be displayed with the recipe details after
-          you’ve created the recipe. If you are re-using ingredients that you
-          have used before, these will be available as an option as well.
+          Add any ingredients used in recipe, including their quantity and the
+          units used. These ingredients will be saved when you submit the
+          recipe, and can be viewed later from the Recipe Details page.
         </ListItem>
         <ListItem>
           Submit the form. You should see a card for your new recipe appear on
@@ -44,7 +43,7 @@ function RouteComponent() {
           prepare within a certain date range.
         </ListItem>
       </List>
-      <Text my="md">We hope you enjoy using the Forkful Meal</Text>
+      <Text my="md">We hope you enjoy using the Forkful Meal Planner!</Text>
     </>
   );
 }

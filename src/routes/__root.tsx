@@ -28,7 +28,7 @@ function RootComponent() {
 
       <AppShell.Main bg="brand-light.1">
         <main>
-          <Container size="lg">
+          <Container size="xl">
             <Outlet />
           </Container>
         </main>
