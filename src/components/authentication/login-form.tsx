@@ -6,7 +6,7 @@ import { FormEvent } from 'react';
 import { loginUser } from '../../services/authentication-service';
 
 interface FormData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -30,9 +30,9 @@ export function LoginForm() {
   return (
     <form onSubmit={submit}>
       <TextInput
-        label="Username"
-        key={form.key('username')}
-        {...form.getInputProps('username')}
+        label="Email"
+        key={form.key('email')}
+        {...form.getInputProps('email')}
       />
 
       <PasswordInput

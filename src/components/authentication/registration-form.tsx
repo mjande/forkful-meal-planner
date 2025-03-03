@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { PasswordInput, TextInput, Text, Group, Button } from '@mantine/core';
 
 interface FormData {
-  username: string;
+  email: string;
   password: string;
 }
 
@@ -28,12 +28,12 @@ export function RegistrationForm() {
 
   return (
     <form onSubmit={submit}>
-      <Text>Enter a username and password to create a user account.</Text>
+      <Text>Enter your email and password to create a user account.</Text>
 
       <TextInput
-        label="Username"
-        key={form.key('username')}
-        {...form.getInputProps('username')}
+        label="Email"
+        key={form.key('email')}
+        {...form.getInputProps('email')}
       />
 
       <PasswordInput
