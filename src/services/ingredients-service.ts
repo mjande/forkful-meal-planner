@@ -1,7 +1,9 @@
-const url = 'http://localhost:3001/ingredients';
+import { ApiResponse } from '../models/api-response';
 
 export async function getIngredients(): Promise<string[]> {
-  const res = await fetch(url);
-  const data = (await res.json()) as string[];
-  return data;
+  const res = await fetch(
+    `${import.meta.env.VITE_RECIPES_SERVICE_URL}/ingredients`,
+  );
+  const json = (await res.json()) as ApiResponse<string>;
+  return json.data;
 }
