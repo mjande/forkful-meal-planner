@@ -1,12 +1,24 @@
 import { Title, Text, Image, Group, Container, List } from '@mantine/core';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Header } from '../components/shared/header/header';
+import { openLoginForm } from '../components/authentication/login-form';
 
 export const Route = createFileRoute('/')({
   component: RouteComponent,
+  validateSearch: (search: Record<string, unknown>): { login: boolean } => {
+    return {
+      login: search?.login === true,
+    };
+  },
 });
 
 function RouteComponent() {
+  const { login } = Route.useSearch();
+
+  if (login) {
+    openLoginForm();
+  }
+
   return (
     <>
       <Header title="Forkful Meal Planner"></Header>

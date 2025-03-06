@@ -1,3 +1,14 @@
+import { redirect } from '@tanstack/react-router';
+
+export async function checkAuthentication(isLoggedIn: boolean) {
+  if (!isLoggedIn) {
+    throw redirect({
+      to: '/',
+      search: { login: true },
+    });
+  }
+}
+
 export async function loginUser({
   email,
   password,
@@ -20,16 +31,8 @@ export async function loginUser({
     return;
   }
 
-  localStorage.setItem('token', data.token);
   console.log('Succesfully logged in');
-}
-
-export function logout() {
-  localStorage.removeItem('token');
-}
-
-export function isLoggedIn() {
-  return localStorage.getItem('token') != null;
+  return data.token;
 }
 
 export async function registerUser({

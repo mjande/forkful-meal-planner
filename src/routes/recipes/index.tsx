@@ -15,9 +15,11 @@ import { modals } from '@mantine/modals';
 import { MealForm } from '../../components/meals/meal-form';
 import { getRecipes } from '../../services/recipes-service';
 import { useEffect, useState } from 'react';
+import { checkAuthentication } from '../../services/authentication-service';
 
 export const Route = createFileRoute('/recipes/')({
   component: RouteComponent,
+  beforeLoad: ({ context }) => checkAuthentication(context.isLoggedIn),
   loader: getRecipes,
 });
 

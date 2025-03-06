@@ -2,8 +2,15 @@ import { ApiResponse } from '../models/api-response';
 import { Recipe } from '../models/recipe';
 
 export async function getRecipes(): Promise<Recipe[]> {
+  const token = localStorage.getItem('token');
+
   const res = await fetch(
     `${import.meta.env.VITE_RECIPES_SERVICE_URL}/recipes`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
   );
   const json = (await res.json()) as ApiResponse<Recipe>;
   return json.data;

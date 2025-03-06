@@ -10,6 +10,13 @@ interface FormData {
   password: string;
 }
 
+export function openRegistrationForm() {
+  modals.open({
+    title: `Register User`,
+    children: <RegistrationForm></RegistrationForm>,
+  });
+}
+
 export function RegistrationForm() {
   const form = useForm<FormData>();
 

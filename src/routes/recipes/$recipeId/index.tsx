@@ -25,9 +25,11 @@ import {
 } from '../../../services/recipes-service';
 import { Ingredient } from '../../../models/ingredient';
 import { useMutation } from '@tanstack/react-query';
+import { checkAuthentication } from '../../../services/authentication-service';
 
 export const Route = createFileRoute('/recipes/$recipeId/')({
   component: RouteComponent,
+  beforeLoad: ({ context }) => checkAuthentication(context.isLoggedIn),
   loader: async ({ params }) => {
     const recipes = await getRecipes();
     const recipe = await getRecipe(parseInt(params.recipeId));

@@ -9,9 +9,11 @@ import { deleteMeal, getMeals } from '../services/meals-service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getRecipes } from '../services/recipes-service';
+import { checkAuthentication } from '../services/authentication-service';
 
 export const Route = createFileRoute('/meal-plans')({
   component: RouteComponent,
+  beforeLoad: ({ context }) => checkAuthentication(context.isLoggedIn),
   loader: () => getRecipes(),
 });
 
