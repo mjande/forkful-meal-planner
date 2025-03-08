@@ -4,7 +4,6 @@ import { modals } from '@mantine/modals';
 import { useMutation } from '@tanstack/react-query';
 import { FormEvent } from 'react';
 import { useAuth } from '../../context/auth-context';
-import { useRouter } from '@tanstack/react-router';
 
 interface FormData {
   email: string;

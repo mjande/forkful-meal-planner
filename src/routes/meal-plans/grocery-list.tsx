@@ -1,6 +1,6 @@
-import { createFileRoute, Link, useLocation, useNavigate, useRouter } from '@tanstack/react-router';
+import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { Header } from '../../components/shared/header/header';
-import { Anchor, Button, List, ListItem, Paper } from '@mantine/core';
+import { Button, List, ListItem, Paper } from '@mantine/core';
 import { generateGroceryList } from '../../services/grocery-list-service';
 import dayjs from 'dayjs';
 import { capitalize } from '../../utils/format';
