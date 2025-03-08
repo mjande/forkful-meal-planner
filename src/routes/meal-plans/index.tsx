@@ -1,5 +1,10 @@
-import { createFileRoute, Link, useLinkProps } from '@tanstack/react-router';
-import { Header } from '../components/shared/header/header';
+import {
+  createFileRoute,
+  Link,
+  useLinkProps,
+  useNavigate,
+} from '@tanstack/react-router';
+import { Header } from '../../components/shared/header/header';
 import dayjs from 'dayjs';
 import {
   Button,
@@ -11,18 +16,18 @@ import {
   Group,
   List,
 } from '@mantine/core';
-import { Meal } from '../models/meal';
+import { Meal } from '../../models/meal';
 import { modals } from '@mantine/modals';
-import { MealForm } from '../components/meals/meal-form';
-import { deleteMeal, getMeals } from '../services/meals-service';
+import { MealForm } from '../../components/meals/meal-form';
+import { deleteMeal, getMeals } from '../../services/meals-service';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
-import { getRecipes } from '../services/recipes-service';
-import { checkAuthentication } from '../services/authentication-service';
-import { generateGroceryList } from '../services/grocery-list-service';
-import { stripTimeFromDate } from '../utils/date';
+import { getRecipes } from '../../services/recipes-service';
+import { checkAuthentication } from '../../services/authentication-service';
+import { generateGroceryList } from '../../services/grocery-list-service';
+import { stripTimeFromDate } from '../../utils/date';
 
-export const Route = createFileRoute('/meal-plans')({
+export const Route = createFileRoute('/meal-plans/')({
   component: RouteComponent,
   beforeLoad: ({ context }) => checkAuthentication(context.isLoggedIn),
   loader: () => getRecipes(),
@@ -110,6 +115,7 @@ function MealCard({ meal, refresh }: { meal: Meal; refresh: () => void }) {
 
 function RouteComponent() {
   const recipes = Route.useLoaderData();
+  const navigate = useNavigate({ from: '/meal-plans' });
 
   const dateRanges = getDateRanges();
   const defaultStart = dayjs(dateRanges[0].split(' - ')[0]);
@@ -131,21 +137,9 @@ function RouteComponent() {
     });
   }
 
-  const generate = useMutation({
-    mutationFn: generateGroceryList,
-    onSuccess: () => {
-      // modals.closeAll();
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-
   function openGenerateGroceryListConfirmation() {
-    const recipeIds = data?.map((meal) => meal.recipe.id);
-
     const mealsList = data?.map((meal) => (
-      <List.Item>
+      <List.Item key={meal.id}>
         {stripTimeFromDate(meal.date)}: {meal.recipe.name}
       </List.Item>
     ));
@@ -161,7 +155,14 @@ function RouteComponent() {
         </>
       ),
       labels: { confirm: 'Generate', cancel: 'Cancel' },
-      onConfirm: () => generate.mutate(recipeIds),
+      onConfirm: () =>
+        navigate({
+          to: '/meal-plans/grocery-list',
+          search: {
+            startDate: stripTimeFromDate(start),
+            endDate: stripTimeFromDate(end),
+          },
+        }),
     });
   }
 
