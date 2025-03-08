@@ -2,35 +2,46 @@ import dayjs, { Dayjs } from 'dayjs';
 import { getRecipes } from './recipes-service';
 import { Meal } from '../models/meal';
 
-const url = 'http://localhost:3001/meals';
+interface MealResponse {
+  message?: string;
+  data: {
+    id: number;
+    recipeId: number;
+    date: string;
+  }[];
+}
 
 function convertToISODate(date: Dayjs) {
   return date.toISOString().split('T')[0];
 }
 
 export async function getMeals(start: Dayjs, end: Dayjs) {
+  const token = localStorage.getItem('token');
+  const params = new URLSearchParams({
+    start: convertToISODate(start),
+    end: convertToISODate(end),
+  }).toString();
+
   const res = await fetch(
-    url +
-      '?' +
-      new URLSearchParams({
-        start: convertToISODate(start),
-        end: convertToISODate(end),
-      }).toString(),
+    `${import.meta.env.VITE_MEALS_SERVICE_URL}/meals?${params}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
   );
 
-  const data = (await res.json()) as {
-    id: number;
-    recipeId: number;
-    date: string;
-  }[];
+  const json = (await res.json()) as MealResponse;
 
   const recipes = await getRecipes();
 
   const meals: Meal[] = [];
-  for (const item of data) {
-    const recipe = recipes.find((recipe) => recipe.id === item.recipeId);
-    if (recipe) {
-      meals.push({ id: item.id, date: dayjs(item.date), recipe });
+  if (json.data) {
+    for (const item of json.data) {
+      const recipe = recipes.find((recipe) => recipe.id === item.recipeId);
+      if (recipe) {
+        meals.push({ id: item.id, date: dayjs(item.date), recipe });
+      }
     }
   }
 
@@ -38,21 +49,31 @@ export async function getMeals(start: Dayjs, end: Dayjs) {
 }
 
 export async function createMeal(body: { recipeId: string; date: Dayjs }) {
+  const token = localStorage.getItem('token');
+
   const meal = {
     recipeId: parseInt(body.recipeId),
     date: convertToISODate(body.date),
   };
 
-  const res = await fetch(url, {
+  const res = await fetch(`${import.meta.env.VITE_MEALS_SERVICE_URL}/meals`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     method: 'POST',
     body: JSON.stringify(meal),
   });
-  const data = (await res.json()) as Meal;
-  return data;
+  const json = (await res.json()) as MealResponse;
+  return json?.data[0];
 }
 
 export async function deleteMeal(id: number) {
-  return await fetch(`${url}/${id}`, {
+  const token = localStorage.getItem('token');
+
+  return await fetch(`${import.meta.env.VITE_MEALS_SERVICE_URL}/meals/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
     method: 'DELETE',
   });
 }
