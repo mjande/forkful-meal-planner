@@ -11,6 +11,7 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as UnitConverterImport } from './routes/unit-converter'
 import { Route as HelpImport } from './routes/help'
 import { Route as IndexImport } from './routes/index'
 import { Route as RecipesIndexImport } from './routes/recipes/index'
@@ -21,6 +22,12 @@ import { Route as RecipesRecipeIdIndexImport } from './routes/recipes/$recipeId/
 import { Route as RecipesRecipeIdEditImport } from './routes/recipes/$recipeId/edit'
 
 // Create/Update Routes
+
+const UnitConverterRoute = UnitConverterImport.update({
+  id: '/unit-converter',
+  path: '/unit-converter',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const HelpRoute = HelpImport.update({
   id: '/help',
@@ -88,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HelpImport
       parentRoute: typeof rootRoute
     }
+    '/unit-converter': {
+      id: '/unit-converter'
+      path: '/unit-converter'
+      fullPath: '/unit-converter'
+      preLoaderRoute: typeof UnitConverterImport
+      parentRoute: typeof rootRoute
+    }
     '/meal-plans/grocery-list': {
       id: '/meal-plans/grocery-list'
       path: '/meal-plans/grocery-list'
@@ -138,6 +152,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
+  '/unit-converter': typeof UnitConverterRoute
   '/meal-plans/grocery-list': typeof MealPlansGroceryListRoute
   '/recipes/add': typeof RecipesAddRoute
   '/meal-plans': typeof MealPlansIndexRoute
@@ -149,6 +164,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
+  '/unit-converter': typeof UnitConverterRoute
   '/meal-plans/grocery-list': typeof MealPlansGroceryListRoute
   '/recipes/add': typeof RecipesAddRoute
   '/meal-plans': typeof MealPlansIndexRoute
@@ -161,6 +177,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/help': typeof HelpRoute
+  '/unit-converter': typeof UnitConverterRoute
   '/meal-plans/grocery-list': typeof MealPlansGroceryListRoute
   '/recipes/add': typeof RecipesAddRoute
   '/meal-plans/': typeof MealPlansIndexRoute
@@ -174,6 +191,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/help'
+    | '/unit-converter'
     | '/meal-plans/grocery-list'
     | '/recipes/add'
     | '/meal-plans'
@@ -184,6 +202,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/help'
+    | '/unit-converter'
     | '/meal-plans/grocery-list'
     | '/recipes/add'
     | '/meal-plans'
@@ -194,6 +213,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/help'
+    | '/unit-converter'
     | '/meal-plans/grocery-list'
     | '/recipes/add'
     | '/meal-plans/'
@@ -206,6 +226,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HelpRoute: typeof HelpRoute
+  UnitConverterRoute: typeof UnitConverterRoute
   MealPlansGroceryListRoute: typeof MealPlansGroceryListRoute
   RecipesAddRoute: typeof RecipesAddRoute
   MealPlansIndexRoute: typeof MealPlansIndexRoute
@@ -217,6 +238,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HelpRoute: HelpRoute,
+  UnitConverterRoute: UnitConverterRoute,
   MealPlansGroceryListRoute: MealPlansGroceryListRoute,
   RecipesAddRoute: RecipesAddRoute,
   MealPlansIndexRoute: MealPlansIndexRoute,
@@ -237,6 +259,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/help",
+        "/unit-converter",
         "/meal-plans/grocery-list",
         "/recipes/add",
         "/meal-plans/",
@@ -250,6 +273,9 @@ export const routeTree = rootRoute
     },
     "/help": {
       "filePath": "help.tsx"
+    },
+    "/unit-converter": {
+      "filePath": "unit-converter.tsx"
     },
     "/meal-plans/grocery-list": {
       "filePath": "meal-plans/grocery-list.tsx"

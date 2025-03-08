@@ -24,7 +24,6 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getRecipes } from '../../services/recipes-service';
 import { checkAuthentication } from '../../services/authentication-service';
-import { generateGroceryList } from '../../services/grocery-list-service';
 import { stripTimeFromDate } from '../../utils/date';
 
 export const Route = createFileRoute('/meal-plans/')({
