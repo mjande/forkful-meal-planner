@@ -17,8 +17,15 @@ export async function getRecipes(): Promise<Recipe[]> {
 }
 
 export async function getRecipe(id: number): Promise<Recipe> {
+  const token = localStorage.getItem('token');
+
   const res = await fetch(
     `${import.meta.env.VITE_RECIPES_SERVICE_URL}/recipes/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
   );
   const json = (await res.json()) as ApiResponse<Recipe>;
   const recipe = json.data[0];
@@ -36,9 +43,14 @@ export async function getRecipe(id: number): Promise<Recipe> {
 }
 
 export async function createRecipe(recipe: Partial<Recipe>): Promise<Recipe> {
+  const token = localStorage.getItem('token');
+
   const res = await fetch(
     `${import.meta.env.VITE_RECIPES_SERVICE_URL}/recipes`,
     {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       method: 'POST',
       body: JSON.stringify(recipe),
     },
@@ -54,9 +66,14 @@ export async function updateRecipe({
   id: number;
   recipe: Partial<Recipe>;
 }): Promise<Recipe> {
+  const token = localStorage.getItem('token');
+
   const res = await fetch(
     `${import.meta.env.VITE_RECIPES_SERVICE_URL}/recipes/${id}`,
     {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       method: 'PATCH',
       body: JSON.stringify(recipe),
     },
@@ -66,9 +83,14 @@ export async function updateRecipe({
 }
 
 export async function deleteRecipe(id: number) {
+  const token = localStorage.getItem('token');
+
   return await fetch(
     `${import.meta.env.VITE_RECIPES_SERVICE_URL}/recipes/${id}`,
     {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       method: 'DELETE',
     },
   );
