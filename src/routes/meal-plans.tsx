@@ -1,7 +1,16 @@
 import { createFileRoute, Link, useLinkProps } from '@tanstack/react-router';
 import { Header } from '../components/shared/header/header';
 import dayjs from 'dayjs';
-import { Button, Card, Flex, Select, Title, Text, Group } from '@mantine/core';
+import {
+  Button,
+  Card,
+  Flex,
+  Select,
+  Title,
+  Text,
+  Group,
+  List,
+} from '@mantine/core';
 import { Meal } from '../models/meal';
 import { modals } from '@mantine/modals';
 import { MealForm } from '../components/meals/meal-form';
@@ -10,6 +19,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { getRecipes } from '../services/recipes-service';
 import { checkAuthentication } from '../services/authentication-service';
+import { generateGroceryList } from '../services/grocery-list-service';
+import { stripTimeFromDate } from '../utils/date';
 
 export const Route = createFileRoute('/meal-plans')({
   component: RouteComponent,
@@ -120,6 +131,40 @@ function RouteComponent() {
     });
   }
 
+  const generate = useMutation({
+    mutationFn: generateGroceryList,
+    onSuccess: () => {
+      // modals.closeAll();
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+  });
+
+  function openGenerateGroceryListConfirmation() {
+    const recipeIds = data?.map((meal) => meal.recipe.id);
+
+    const mealsList = data?.map((meal) => (
+      <List.Item>
+        {stripTimeFromDate(meal.date)}: {meal.recipe.name}
+      </List.Item>
+    ));
+
+    modals.openConfirmModal({
+      title: 'Generate Grocery List',
+      children: (
+        <>
+          <Text mb="md">
+            Click Generate to create a grocery list for the following meals:
+          </Text>
+          <List>{mealsList}</List>
+        </>
+      ),
+      labels: { confirm: 'Generate', cancel: 'Cancel' },
+      onConfirm: () => generate.mutate(recipeIds),
+    });
+  }
+
   function handleSelect(value: string | null) {
     if (value) {
       const dates = value.split(' - ');
@@ -149,7 +194,12 @@ function RouteComponent() {
           w="225px"
         />
 
-        <Button onClick={openMealForm}>Add Meal to Plan</Button>
+        <Group>
+          <Button onClick={openMealForm}>Add Meal to Plan</Button>
+          <Button onClick={openGenerateGroceryListConfirmation}>
+            Generate Grocery List
+          </Button>
+        </Group>
       </Flex>
       <Flex gap="sm" mt="sm" wrap="wrap">
         {mealCards}
