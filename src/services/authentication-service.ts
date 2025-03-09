@@ -16,6 +16,8 @@ export async function loginUser({
   email: string;
   password: string;
 }) {
+  console.log("Requesting login for user ", email);
+
   const result = await fetch(
     `${import.meta.env.VITE_USER_AUTH_SERVICE_URL}/login`,
     {
@@ -31,7 +33,7 @@ export async function loginUser({
     return;
   }
 
-  console.log('Succesfully logged in');
+  console.log('Succesfully logged in!: Received token ', data.token);
   return data.token;
 }
 
@@ -42,8 +44,6 @@ export async function registerUser({
   email: string;
   password: string;
 }) {
-  console.log(import.meta.env.VITE_USER_AUTH_SERVICE_URL);
-
   const result = await fetch(
     `${import.meta.env.VITE_USER_AUTH_SERVICE_URL}/register`,
     {
@@ -52,8 +52,6 @@ export async function registerUser({
     },
   );
   const data = (await result.json()) as { message: string };
-
-  console.log(data.message);
 
   if (result.status != 201) {
     throw new Error('Authentication error');

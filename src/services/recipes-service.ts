@@ -2,6 +2,8 @@ import { ApiResponse } from '../models/api-response';
 import { Recipe } from '../models/recipe';
 
 export async function getRecipes(): Promise<Recipe[]> {
+  console.log("Requesting list of recipes");
+
   const token = localStorage.getItem('token');
 
   const res = await fetch(
@@ -13,6 +15,9 @@ export async function getRecipes(): Promise<Recipe[]> {
     },
   );
   const json = (await res.json()) as ApiResponse<Recipe>;
+
+  console.log(`Received list of ${json.data.length} recipes`);
+
   return json.data;
 }
 
@@ -66,6 +71,7 @@ export async function updateRecipe({
   id: number;
   recipe: Partial<Recipe>;
 }): Promise<Recipe> {
+  console.log("Requesting update for recipe with ID ", id);
   const token = localStorage.getItem('token');
 
   const res = await fetch(
@@ -79,6 +85,7 @@ export async function updateRecipe({
     },
   );
   const json = (await res.json()) as ApiResponse<Recipe>;
+
   return json.data[0];
 }
 

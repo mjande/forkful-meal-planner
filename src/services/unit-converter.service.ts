@@ -4,6 +4,7 @@ export async function getConversions() {
 }
 
 export async function convertUnits(formData: { fromUnit: string, toUnit: string, val: number}) {
+  console.log(`Requesting conversion of ${formData.val} ${formData.fromUnit} to ${formData.toUnit}`);
   const res = await fetch(`${import.meta.env.VITE_UNIT_CONVERTER_SERVICE_URL}/convert`,
     {
       headers: {
@@ -13,5 +14,10 @@ export async function convertUnits(formData: { fromUnit: string, toUnit: string,
       body: JSON.stringify(formData),
     }
   )
-  return (await res.json()) as { result: string };
+
+  const json = (await res.json()) as { result: string };
+
+  console.log(`Received result of ${json.result} ${formData.toUnit}`);
+
+  return json;
 }

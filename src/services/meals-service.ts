@@ -1,6 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { getRecipes } from './recipes-service';
 import { Meal } from '../models/meal';
+import { stripTimeFromDate } from '../utils/date';
 
 interface MealResponse {
   message?: string;
@@ -16,6 +17,9 @@ function convertToISODate(date: Dayjs) {
 }
 
 export async function getMeals(start: Dayjs, end: Dayjs) {
+  console.log(`Requesting list of meals between ${stripTimeFromDate(start)} and ${stripTimeFromDate(end)}`);
+
+
   const token = localStorage.getItem('token');
   const params = new URLSearchParams({
     start: convertToISODate(start),
@@ -44,6 +48,8 @@ export async function getMeals(start: Dayjs, end: Dayjs) {
       }
     }
   }
+
+  console.log(`Received list of ${meals.length} between the requested dates`);
 
   return meals;
 }
